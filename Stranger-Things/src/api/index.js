@@ -1,9 +1,15 @@
 // this will be for the API end points
 const BASE_URL = `https://strangers-things.herokuapp.com/api/2306-FTB-ET-WEB-PT`;
+const token = sessionStorage.getItem("token");
 
 export async function getPosts(){
-  const response = await fetch(`${BASE_URL}/posts`)
-  const result = response.json();
+  const response = await fetch(`${BASE_URL}/posts`,
+  {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    }})
+  const result = await response.json();
   console.log(result);
   return result;
 }
@@ -33,7 +39,8 @@ export async function register(username, password){
   }
 }
 
-export async function login(username, password) {
+export async function login({username, password}) {
+
   try {
     const response = await fetch(`${BASE_URL}/users/login`, {
       method: "POST",
@@ -63,7 +70,7 @@ export async function login(username, password) {
   }
 }
 
-export async function makePost(token, post){
+export async function makePost(token, posts){
   try{
     const response = await fetch(
       `${BASE_URL}/posts`,{
@@ -74,10 +81,11 @@ export async function makePost(token, post){
         },
         body: JSON.stringify({
           post: {
-            title: post.title,
-            description: post.description,
-            price: post.price,
-            location: post.location,
+            title: posts.title,
+            description: posts.description,
+            price: posts.price,
+            location: posts.location,
+            willDeliver: posts.willDeliver
           },
         }),
       });
@@ -90,10 +98,10 @@ export async function makePost(token, post){
   }
 }
 
-export async function deletePost(token, postId){
+export async function deletePost(token, _Id){
   try{
     const response = await fetch(
-      `${BASE_URL}/posts/${postId}`,{
+      `${BASE_URL}/posts/${_Id}`,{
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
